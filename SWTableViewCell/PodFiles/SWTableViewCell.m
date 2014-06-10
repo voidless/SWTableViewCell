@@ -230,11 +230,29 @@ static NSString * const kTableViewPanState = @"state";
     [self layoutIfNeeded];
 }
 
+- (void)setLeftUtilityButtons:(NSArray *)leftUtilityButtons WithButtonWidth:(CGFloat) width
+{
+    _leftUtilityButtons = leftUtilityButtons;
+    
+    [self.leftUtilityButtonsView setUtilityButtons:leftUtilityButtons WithButtonWidth:width];
+    
+    [self layoutIfNeeded];
+}
+
 - (void)setRightUtilityButtons:(NSArray *)rightUtilityButtons
 {
     _rightUtilityButtons = rightUtilityButtons;
     
     self.rightUtilityButtonsView.utilityButtons = rightUtilityButtons;
+    
+    [self layoutIfNeeded];
+}
+
+- (void)setRightUtilityButtons:(NSArray *)rightUtilityButtons WithButtonWidth:(CGFloat) width
+{
+    _rightUtilityButtons = rightUtilityButtons;
+    
+    [self.rightUtilityButtonsView setUtilityButtons:rightUtilityButtons WithButtonWidth:width];
     
     [self layoutIfNeeded];
 }
@@ -298,7 +316,7 @@ static NSString * const kTableViewPanState = @"state";
 
 - (void)didTransitionToState:(UITableViewCellStateMask)state {
     [super didTransitionToState:state];
-
+    
     if (state == UITableViewCellStateDefaultMask) {
         [self layoutSubviews];
     }
@@ -533,7 +551,7 @@ static NSString * const kTableViewPanState = @"state";
     
     self.leftUtilityClipConstraint.constant = MAX(0, CGRectGetMinX(frame) - CGRectGetMinX(self.frame));
     self.rightUtilityClipConstraint.constant = MIN(0, CGRectGetMaxX(frame) - CGRectGetMaxX(self.frame));
-
+    
     if (self.isEditing) {
         self.leftUtilityClipConstraint.constant = 0;
         self.cellScrollView.contentOffset = CGPointMake([self leftUtilityButtonsWidth], 0);
@@ -542,7 +560,7 @@ static NSString * const kTableViewPanState = @"state";
     
     self.leftUtilityClipView.hidden = (self.leftUtilityClipConstraint.constant == 0);
     self.rightUtilityClipView.hidden = (self.rightUtilityClipConstraint.constant == 0);
-
+    
     if (self.accessoryType != UITableViewCellAccessoryNone && !self.editing) {
         UIView *accessory = [self.cellScrollView.superview.subviews lastObject];
         
@@ -550,7 +568,7 @@ static NSString * const kTableViewPanState = @"state";
         accessoryFrame.origin.x = CGRectGetWidth(frame) - CGRectGetWidth(accessoryFrame) - kAccessoryTrailingSpace + CGRectGetMinX(frame);
         accessory.frame = accessoryFrame;
     }
-
+    
     // Enable or disable the gesture recognizers according to the current mode.
     if (!self.cellScrollView.isDragging && !self.cellScrollView.isDecelerating)
     {
